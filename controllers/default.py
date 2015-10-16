@@ -7,11 +7,42 @@
 ## - user is required for authentication and authorization
 ## - download is for downloading files uploaded in the db (does streaming)
 #########################################################################
-
+@auth.requires_login()
 def index():
-    grid = SQLFORM.grid(db.lecturas, csv=False,searchable=False)
+    
+    rejilla = SQLFORM.grid(db.lecturas,  searchable=False, 
+    details=False, csv=False)
 
-    return dict(datos=grid)
+    return dict(lecturas=rejilla)
+
+
+@auth.requires_login()
+def etiquetas():
+    
+    rejilla = SQLFORM.grid(db.tags,details=False, csv=False)
+
+    return dict(lecturas=rejilla)
+    
+    
+def valoresuna():
+    etiqueta=db(db.tags.nombre=="Q1").select().first()
+    
+    filas = db(db.lecturas.tag == etiqueta.id).select()
+    
+    
+    return dict(datos=filas)
+
+
+
+def valoresparom1():
+    etiqueta=db(db.tags.nombre=="ParoM1").select().first()
+    
+    filas = db(db.lecturas.tag == etiqueta.id).select()
+    
+    
+    return dict(datos=filas)
+    
+    
 
 
 def user():

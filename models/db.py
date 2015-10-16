@@ -101,7 +101,8 @@ db.define_table('tags',
 db.define_table('lecturas',
     Field('tag',db.tags),
     Field('valor','integer'),
-    Field('fecha','datetime')
+    Field('fecha','datetime'),
+    format='%(tag)s - %(valor)s - %(fecha)s'
     )
 
 db.lecturas.id.readable=False

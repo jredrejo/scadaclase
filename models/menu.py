@@ -25,7 +25,12 @@ response.google_analytics_id = None
 #########################################################################
 
 response.menu = [
-    ('Señales', False, URL('default', 'index'), []),
-    (T('waterwaste'), False, URL('default', 'index'), [])
+    ('Valores', True, URL('default', 'index'), [
+        ('Todos', False, URL('default', 'index'), []),
+        ('Q1', False, URL('default', 'valoresuna'), []),
+        ('Paro Motor 1', False, URL('default', 'valoresparom1'), []),
+    
+    ]),
+    ('Etiquetas', False, URL('default', 'etiquetas'), []),
 
 ]
