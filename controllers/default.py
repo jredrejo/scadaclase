@@ -7,16 +7,57 @@
 ## - user is required for authentication and authorization
 ## - download is for downloading files uploaded in the db (does streaming)
 #########################################################################
-@auth.requires_login()
+
+
+	
+
+from datetime import datetime
+
+
 def index():
     
-    rejilla = SQLFORM.grid(db.lecturas,  searchable=False, 
+
+    if "ultima_fecha" not in session:
+        session.ultima_fecha='1/1/1999 0:0:0'
+
+    # dia= session.ultima_fecha.split("/")[0]
+    # mes= session.ultima_fecha.split("/")[1]
+    # year = session.ultima_fecha.split("/")[2].split(" ")[0]
+    # fecha_buscar = year + "-" + mes + "-" + dia
+    
+    formato_fecha = T("%Y-%m-%d %H:%M:%S", lazy=False)
+    fecha_object = datetime.strptime(session.ultima_fecha, formato_fecha)
+    fecha_buscar = datetime.strftime(fecha_object,"%Y-%m-%d")
+    consulta = db.lecturas.fecha >= fecha_buscar
+
+    #fila_senal = db(db.tags.nombre=="Q1").select().first()
+    #if fila_senal:
+    #    tag_id = fila_senal.id
+    #else:
+    #    tag_id = 0
+    
+    #consulta = db.lecturas.tag == tag_id
+    
+    rejilla = SQLFORM.grid(consulta,  searchable=False, 
     details=False, csv=False)
+    
+    
+    form=FORM('Fecha inicio:',
+     INPUT(_name='fecha',_class="datetime",),
+     INPUT(_name='otro',_value="33"),
+     INPUT(_type='submit', _value="Mirar"))
+     
+    if form.accepts(request,session):
+        #response.flash = 'has mandado una fecha'
+        session.ultima_fecha = request.vars.fecha
+        #redirect(URL("default", "index"))
+        
+        
 
-    return dict(lecturas=rejilla)
+             
+    return dict(lecturas=rejilla, form=form)
 
 
-@auth.requires_login()
 def etiquetas():
     
     rejilla = SQLFORM.grid(db.tags,details=False, csv=False)
@@ -27,10 +68,16 @@ def etiquetas():
 def valoresuna():
     etiqueta=db(db.tags.nombre=="Q1").select().first()
     
+    # db(db.tags.nombre=="Q1").delete()
+    etiqueta.direccion="blblabl"
+    db.commit()
+    
+    
+    
     filas = db(db.lecturas.tag == etiqueta.id).select()
     
     
-    return dict(datos=filas)
+    return dict(datos=filas, fila=etiqueta)
 
 
 
