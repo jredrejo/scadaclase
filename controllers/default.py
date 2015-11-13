@@ -89,8 +89,19 @@ def valoresparom1():
     
     return dict(datos=filas)
     
-    
 
+
+def grafica():
+    # Ejemplo con json
+    return dict()
+
+
+def valores():
+    filas = db(db.lecturas.fecha <= '2008-01-04').select()
+    
+    return dict(filas=filas)
+
+    
 
 def user():
     """
